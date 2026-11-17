@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lab Banco</title>
+<style>
+  body { font-family: system-ui, sans-serif; max-width: 900px; margin: 2rem auto; padding: 0 1rem; }
+  table { border-collapse: collapse; width: 100%; }
+  th, td { border-bottom: 1px solid #ddd; padding: .4rem; text-align: left; }
+  input, select, button { padding: .4rem; margin: .2rem; }
+  #msg { min-height: 1.5rem; font-weight: 600; }
+</style>
+</head>
+<body>
+<h1>Lab Banco</h1>
+<form id="f">
+  <select id="tipo">
+    <option value="deposito">Deposito</option>
+    <option value="retiro">Retiro</option>
+    <option value="transferencia">Transferencia</option>
+  </select>
+  <input id="origen" placeholder="Cuenta origen (id)" size="16">
+  <input id="destino" placeholder="Cuenta destino (id)" size="16">
+  <input id="monto" placeholder="Monto" size="12" required>
+  <button>Enviar</button>
+</form>
+<p id="msg"></p>
+<table>
+  <thead><tr><th>ID</th><th>Numero</th><th>Titular</th><th>Moneda</th><th>Saldo</th></tr></thead>
+  <tbody id="filas"></tbody>
+</table>
+<script>
+const msg = document.getElementById('msg');
+
+async function cargar() {
+  const cuentas = await (await fetch('/api/cuentas?limite=25')).json();
+  const cuerpo = document.getElementById('filas');
+  cuerpo.replaceChildren();
+  for (const c of cuentas) {
+    const tr = document.createElement('tr');
+    for (const v of [c.cuenta_id, c.numero, c.nombre, c.moneda, c.saldo]) {
+      const td = document.createElement('td');
+      td.textContent = v;
+      tr.appendChild(td);
+    }
+    cuerpo.appendChild(tr);
+  }
+}
+
+document.getElementById('f').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const r = await fetch('/api/transacciones', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      clave: crypto.randomUUID(),
+      tipo: document.getElementById('tipo').value,
+      origen: document.getElementById('origen').value,
+      destino: document.getElementById('destino').value,
+      monto: document.getElementById('monto').value,
+    }),
+  });
+  const d = await r.json();
+  msg.textContent = r.ok ? 'Transaccion registrada: ' + d.transaccion_id : 'Error: ' + d.error;
+  if (r.ok) cargar();
+});
+
+cargar();
+</script>
+</body>
+</html>

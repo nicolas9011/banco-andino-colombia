@@ -1,0 +1,87 @@
+@import 'tailwindcss';
+
+/* Identidad visual propia de Banco Andino: azul cordillera + acento cobre. */
+@theme {
+  --font-sans: 'Segoe UI', system-ui, -apple-system, 'Helvetica Neue', Arial, sans-serif;
+  --font-mono: ui-monospace, 'Cascadia Mono', Consolas, monospace;
+
+  --color-andino-50: #f3f7fc;
+  --color-andino-100: #e3edf8;
+  --color-andino-200: #c3d8ee;
+  --color-andino-300: #93b6dd;
+  --color-andino-400: #5f90c7;
+  --color-andino-500: #2f6db5;
+  --color-andino-600: #1f5496;
+  --color-andino-700: #1a4278;
+  --color-andino-800: #123057;
+  --color-andino-900: #0b1f3a;
+  --color-andino-950: #071426;
+
+  --color-cobre-100: #fcebd0;
+  --color-cobre-400: #eab04e;
+  --color-cobre-500: #e39a2d;
+  --color-cobre-600: #c97f14;
+  --color-cobre-700: #a0650f;
+
+  --color-ok-100: #d9f2e8;
+  --color-ok-600: #1b7f5c;
+  --color-ok-700: #14674a;
+  --color-alerta-100: #fdecea;
+  --color-alerta-600: #c0392b;
+  --color-alerta-700: #9c2d22;
+  --color-aviso-100: #fdf3d8;
+  --color-aviso-700: #8a5a07;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  background: #f3f6fa;
+  color: #14213a;
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+/* Cifras alineadas en tablas y saldos */
+.tabular {
+  font-variant-numeric: tabular-nums;
+}
+
+:focus-visible {
+  outline: 3px solid var(--color-cobre-500);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* Al imprimir un comprobante solo se imprime el dialogo abierto. */
+@media print {
+  .no-print {
+    display: none !important;
+  }
+  body * {
+    visibility: hidden;
+  }
+  [role='dialog'],
+  [role='dialog'] * {
+    visibility: visible;
+  }
+  [role='dialog'] {
+    position: absolute;
+    inset: 0 auto auto 0;
+    width: 100%;
+    max-height: none;
+    box-shadow: none;
+  }
+}
