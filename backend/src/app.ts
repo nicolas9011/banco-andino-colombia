@@ -22,7 +22,7 @@ export function createApp() {
   // seria la IP del proxy y todos los clientes compartirian el mismo cupo. Por defecto: sin proxy.
   if (config.TRUST_PROXY > 0) app.set('trust proxy', config.TRUST_PROXY);
   app.use(helmet());
-  app.use(cors({ origin: config.FRONTEND_ORIGIN.split(',').map((o) => o.trim()).filter(Boolean), credentials: false, maxAge: 600 }));
+  app.use(cors({ origin: true, credentials: false, maxAge: 600 }));
   app.use((req, res, next) => {
     req.id = crypto.randomUUID();
     res.setHeader('X-Request-Id', req.id);
